@@ -92,6 +92,7 @@ const textureLoader = new THREE.TextureLoader();
 const texTierra = textureLoader.load('./src/img/textura/ground.jpg');
 const texSuelo = textureLoader.load('./src/img/textura/pasto.jpg');
 const texLadrillo = textureLoader.load('./src/img/textura/ladrillo.jpg');
+const texSorpresa = textureLoader.load('./src/img/textura/estrella.jpg');
 
 const MATERIALES = {
     suelo: new THREE.MeshLambertMaterial({ map: texSuelo }),
