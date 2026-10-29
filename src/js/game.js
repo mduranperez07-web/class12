@@ -92,16 +92,17 @@ const textureLoader = new THREE.TextureLoader();
 const texTierra = textureLoader.load('./src/img/textura/ground.jpg');
 const texSuelo = textureLoader.load('./src/img/textura/pasto.jpg');
 const texLadrillo = textureLoader.load('./src/img/textura/ladrillo.jpg');
-const texSorpresa = textureLoader.load('./src/img/textura/estrella.jpg');
+const texEstrella = textureLoader.load('./src/img/textura/estrella.jpg');
+const texMeta = textureLoader.load('./src/img/textura/meta.jpg');
 
 const MATERIALES = {
     suelo: new THREE.MeshLambertMaterial({ map: texSuelo }),
     tierra: new THREE.MeshLambertMaterial({ map: texTierra }),
     ladrillo: new THREE.MeshLambertMaterial({ map: texLadrillo }),
     piedra: new THREE.MeshLambertMaterial({ color: 0x808080 }),
-    sorpresa: new THREE.MeshLambertMaterial({ color: 0xffd700 }),
+    sorpresa: new THREE.MeshLambertMaterial({ map: texEstrella }), 
     columna: new THREE.MeshLambertMaterial({ color: 0x555555 }),
-    meta: new THREE.MeshLambertMaterial({ color: 0x00ff00 }),
+    meta: new THREE.MeshLambertMaterial({ map:texMeta }),
 };
 
 const GEO_BLOQUE = new THREE.BoxGeometry(1, 1, 1);
