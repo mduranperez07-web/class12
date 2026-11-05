@@ -76,6 +76,7 @@ let bloques = new Map();
 let gemas = [];
 let enemigos = [];
 let particulas = [];
+let grupoDecoracion = null;
 
 let puntoControl = null;
 let banderaMeta = null;
@@ -484,6 +485,118 @@ function crearBandera(alto, colorTela) {
     return grupo;
 }
 
+// =========================================================
+// DECORACIÓN DEL MUNDO
+// =========================================================
+
+function crearNube(x, y, z, escala = 1) {
+    const nube = new THREE.Group();
+
+    const material = new THREE.MeshLambertMaterial({
+        color: 0xffffff,
+        transparent: true,
+        opacity: 0.9
+    });
+
+    const partes = [
+        [-0.5, 0, 0, 0.9],
+        [0, 0.2, 0, 1.2],
+        [0.5, 0, 0, 0.9],
+        [0.9, -0.1, 0, 0.7]
+    ];
+
+    partes.forEach(([px, py, pz, escalaParte]) => {
+        const esfera = new THREE.Mesh(
+            new THREE.SphereGeometry(0.5, 12, 12),
+            material
+        );
+
+        esfera.position.set(px, py, pz);
+        esfera.scale.set(
+            escalaParte,
+            escalaParte,
+            escalaParte
+        );
+
+        nube.add(esfera);
+    });
+
+    nube.position.set(x, y, z);
+    nube.scale.setScalar(escala);
+
+    grupoDecoracion.add(nube);
+}
+
+function crearMontana(x, y, z, escala = 1) {
+    const material = new THREE.MeshLambertMaterial({
+        color: 0x91b8c5
+    });
+
+    const montana = new THREE.Mesh(
+        new THREE.ConeGeometry(5, 8, 5),
+        material
+    );
+
+    montana.position.set(x, y, z);
+    montana.scale.setScalar(escala);
+
+    grupoDecoracion.add(montana);
+}
+
+function crearArbol(x, y, z, escala = 1) {
+    const arbol = new THREE.Group();
+
+    const tronco = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.2, 0.3, 2, 8),
+        new THREE.MeshLambertMaterial({
+            color: 0x795548
+        })
+    );
+
+    tronco.position.y = 1;
+
+    const copa = new THREE.Mesh(
+        new THREE.ConeGeometry(1.2, 2.5, 8),
+        new THREE.MeshLambertMaterial({
+            color: 0x388e3c
+        })
+    );
+
+    copa.position.y = 2.8;
+
+    arbol.add(tronco, copa);
+
+    arbol.position.set(x, y, z);
+    arbol.scale.setScalar(escala);
+
+    grupoDecoracion.add(arbol);
+}
+
+function construirDecoracion() {
+    if (grupoDecoracion) {
+        scene.remove(grupoDecoracion);
+    }
+
+    grupoDecoracion = new THREE.Group();
+
+    const largoNivel = Math.max(...mapaActual.map(fila => fila.length));
+
+    // Decoración repetida a lo largo de todo el nivel
+    for (let x = -10; x < largoNivel + 20; x += 12) {
+  
+        crearArbol(x, 0, -5, 1);
+        crearArbol(x + 6, 0, -7, 0.8);
+
+        if (x % 24 === 2 || x % 24 === 14) {
+            crearMontana(x, 3, -20, 1.4);
+        }
+
+        crearNube(x + 3, 9, -12, 1.3);
+        crearNube(x + 9, 11, -15, 1);
+    }
+
+    scene.add(grupoDecoracion);
+}
 
 const ui = {
     vidas: document.getElementById('hud-vidas'),
@@ -828,7 +941,7 @@ function reaparecerJugador() {
 function actualizarJugador(dt) {
     const j = jugador;
 
-    // Movimiento horizontal
+
     let direccion = 0;
 
     if (teclaIzquierda()) direccion--;
@@ -1221,6 +1334,8 @@ function construirNivel() {
 
     jugador.vx = 0;
     jugador.vy = 0;
+
+    construirDecoracion();
 }
 
 function crearBloque(x, y, tipo) {
